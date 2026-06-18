@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nextgen Tuition Media - Sign Up</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        input { padding: 10px; margin: 5px; width: 250px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #28a745; color: white; border: none; border-radius: 5px; margin-top: 10px; }
+        button:hover { background-color: #218838; }
+        #message { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>নতুন একাউন্ট তৈরি করুন</h2>
+    
+    <input type="email" id="email" placeholder="আপনার ইমেইল দিন" required><br>
+    <input type="password" id="password" placeholder="পাসওয়ার্ড দিন (অন্তত ৬ অক্ষরের)" required><br>
+    
+    <button id="signup-btn">Sign Up</button>
+
+    <p id="message"></p>
+
+    <script type="module">
+        // সঠিক ওয়েব লিংক (CDN) ব্যবহার করে ফায়ারবেস ইমপোর্ট করা
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // আপনার দেওয়া অরিজিনাল ফায়ারবেস কনফিগারেশন
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrrNSdlbP9233viAU9-hywG_ibMbKC89o",
+            authDomain: "nextgen-tuition-media.firebaseapp.com",
+            projectId: "nextgen-tuition-media",
+            storageBucket: "nextgen-tuition-media.firebasestorage.app",
+            messagingSenderId: "512673325761",
+            appId: "1:512673325761:web:195683718dc0b88860ea40",
+            measurementId: "G-0B4160QMTS"
+        };
+
+        // ফায়ারবেস এবং অথেনটিকেশন চালু করা
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // বাটন ও ইনপুট সিলেক্ট করা
+        const signupBtn = document.getElementById("signup-btn");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const messageElement = document.getElementById("message");
+
+        // বাটনে ক্লিক করলে একাউন্ট তৈরির কাজ হবে
+        signupBtn.addEventListener("click", () => {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            // পাসওয়ার্ড ৬ অক্ষরের কম হলে আগে থেকেই ওয়ার্নিং দেওয়া
+            if(password.length < 6) {
+                messageElement.innerText = "পাসওয়ার্ড অন্তত ৬ অক্ষরের হতে হবে! ❌";
+                messageElement.style.color = "red";
+                return;
+            }
+
+            // ফায়ারবেসকে একাউন্ট তৈরি করতে বলা
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    messageElement.innerText = "একাউন্ট সফলভাবে তৈরি হয়েছে! ✅";
+                    messageElement.style.color = "green";
+                })
+                .catch((error) => {
+                    messageElement.innerText = "ভুল হয়েছে: " + error.message + " ❌";
+                    messageElement.style.color = "red";
+                });
+        });
+    </script>
+</body>
+</html>
